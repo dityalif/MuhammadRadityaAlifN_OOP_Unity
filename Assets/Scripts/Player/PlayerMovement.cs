@@ -13,6 +13,11 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 stopFriction;  
     private Rigidbody2D rb;        
 
+    private Vector2 minBounds;
+    private Vector2 maxBounds;
+    private float spriteWidth;
+    private float spriteHeight;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -21,43 +26,54 @@ public class PlayerMovement : MonoBehaviour
         moveVelocity = 2 * maxSpeed / timeToFullSpeed;
         moveFriction = -2 * maxSpeed / (timeToFullSpeed * timeToFullSpeed);
         stopFriction = -2 * maxSpeed / (timeToStop * timeToStop);
+
+        // Menghitung batas-batas dunia dari kamera
+        Vector3 minScreenBounds = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.transform.position.z));
+        Vector3 maxScreenBounds = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.transform.position.z));
+        minBounds = new Vector2(minScreenBounds.x + 0.3f, minScreenBounds.y + 0.2f);
+        maxBounds = new Vector2(maxScreenBounds.x - 0.3f, maxScreenBounds.y - 0.5f);
+
+        // Dapatkan ukuran sprite pesawat
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteWidth = spriteRenderer.bounds.size.x / 2;
+        spriteHeight = spriteRenderer.bounds.size.y / 2;
     }
 
-    void Update() 
+    void Update()
     {
-        Move(); 
+        Move();
     }
 
     public void Move()
     {
-        // Mendapatkan arah gerakan dari input player
+        // Get input direction
         moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
 
         if (moveDirection != Vector2.zero)
         {
-            // Menghitung kecepatan target berdasarkan arah gerakan dan kecepatan maksimum
+            // Calculate target velocity based on input direction and max speed
             Vector2 targetVelocity = moveDirection * maxSpeed;
-            // Menggerakkan player menuju kecepatan target
+            // Move player towards target velocity
             rb.velocity = Vector2.MoveTowards(rb.velocity, targetVelocity, moveVelocity.magnitude * Time.deltaTime);
         }
         else
         {
-            // Menghitung gaya gesekan saat berhenti
+            // Calculate friction force when stopping
             Vector2 frictionForce = GetFriction();
-            // Menghentikan player secara bertahap
+            // Gradually stop the player
             rb.velocity = Vector2.MoveTowards(rb.velocity, Vector2.zero, frictionForce.magnitude * Time.deltaTime);
-
-            // Jika kecepatan player kurang dari nilai stopClamp, berhenti total
-            if (rb.velocity.magnitude < stopClamp.magnitude)
-            {
-                rb.velocity = Vector2.zero;
-            }
         }
+
+        // Keep player within bounds
+        Vector2 clampedPosition = new Vector2(
+            Mathf.Clamp(transform.position.x, minBounds.x + spriteWidth, maxBounds.x - spriteWidth),
+            Mathf.Clamp(transform.position.y, minBounds.y + spriteHeight, maxBounds.y - spriteHeight)
+        );
+        transform.position = clampedPosition;
     }
 
     public Vector2 GetFriction()
     {
-        // Jika ada input (player bergerak), gunakan moveFriction untuk memperlambat gerakan
         if (moveDirection != Vector2.zero)
         {
             return new Vector2(
@@ -65,14 +81,10 @@ public class PlayerMovement : MonoBehaviour
                 moveDirection.y != 0 ? moveFriction.y : 0
             );
         }
-        // Jika tidak ada input, gunakan stopFriction untuk menghentikan player
-        else 
-        {
-            return new Vector2(
-                rb.velocity.x != 0 ? stopFriction.x : 0,
-                rb.velocity.y != 0 ? stopFriction.y : 0
-            );
-        }
+        return new Vector2(
+            rb.velocity.x != 0 ? stopFriction.x : 0,
+            rb.velocity.y != 0 ? stopFriction.y : 0
+        );
     }
 
     public bool IsMoving()
