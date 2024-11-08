@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class WeaponPickup : MonoBehaviour
 {
-    [SerializeField] private Weapon weaponHolder;
-    private Weapon weapon;
+    [SerializeField] private Weapon weaponHolder; // Tempat penyimpanan senjata
+    private Weapon weapon; // Senjata yang akan diambil
 
     void Awake()
     {
         if (weaponHolder != null)
         {
-            weapon = Instantiate(weaponHolder);
+            weapon = Instantiate(weaponHolder); // Membuat instance baru dari senjata yang disimpan
         }
     }
 
@@ -19,11 +19,11 @@ public class WeaponPickup : MonoBehaviour
     {
         if (weapon != null)
         {
-            // Initialize all related methods with false
+            // Inisialisasi semua metode terkait dengan false
             TurnVisual(false);
-            weapon.transform.SetParent(transform, false);
-            weapon.transform.localPosition = Vector3.zero;
-            weapon.parentTransform = transform;
+            weapon.transform.SetParent(transform, false); // Menetapkan weapon sebagai child dari objek ini
+            weapon.transform.localPosition = Vector3.zero; // Mengatur posisi lokal senjata ke (0,0,0)
+            weapon.parentTransform = transform; // Menyimpan transformasi parent senjata
         }
     }
 
@@ -31,20 +31,20 @@ public class WeaponPickup : MonoBehaviour
     {
         if (weapon.transform.parent == transform && other.CompareTag("Player"))
         {
-            // Get the current weapon and its pickup point
+            // Mendapatkan senjata saat ini dan titik pengambilannya
             Weapon currentWeapon = other.GetComponentInChildren<Weapon>();
             if (currentWeapon != null)
             {
-                currentWeapon.transform.SetParent(currentWeapon.parentTransform);
-                currentWeapon.transform.localPosition = Vector3.zero;
-                TurnVisual(false, currentWeapon);
+                currentWeapon.transform.SetParent(currentWeapon.parentTransform); // Mengembalikan senjata saat ini ke induknya
+                currentWeapon.transform.localPosition = Vector3.zero; // Mengatur posisi lokal senjata saat ini ke (0,0,0)
+                TurnVisual(false, currentWeapon); // Menonaktifkan visual senjata saat ini
             }
 
-            // Assign the new weapon to the player
+            // Menetapkan senjata baru ke pemain
             weapon.transform.SetParent(other.transform);
-            // Adjust the local position of the weapon relative to the player
-            weapon.transform.localPosition = new Vector3(0, 0, 0); // Adjust this value as needed
-            TurnVisual(true);
+            // Menyesuaikan posisi lokal senjata relatif terhadap pemain
+            weapon.transform.localPosition = new Vector3(0, 0, 0); // Sesuaikan nilai ini sesuai kebutuhan
+            TurnVisual(true); // Mengaktifkan visual senjata baru
         }
     }
 
@@ -52,20 +52,20 @@ public class WeaponPickup : MonoBehaviour
     {
         if (weapon != null)
         {
-            // Enable or disable all MonoBehaviour components in the Weapon object
+            // Mengaktifkan atau menonaktifkan semua komponen MonoBehaviour di objek Weapon
             foreach (var component in weapon.GetComponentsInChildren<MonoBehaviour>())
             {
                 component.enabled = on;
             }
 
-            // Enable or disable the Animator component
+            // Mengaktifkan atau menonaktifkan komponen Animator
             Animator animator = weapon.GetComponentInChildren<Animator>();
             if (animator != null)
             {
                 animator.enabled = on;
             }
 
-            // Enable or disable the renderer components
+            // Mengaktifkan atau menonaktifkan komponen renderer
             foreach (var renderer in weapon.GetComponentsInChildren<Renderer>())
             {
                 renderer.enabled = on;
@@ -77,20 +77,20 @@ public class WeaponPickup : MonoBehaviour
     {
         if (weapon != null)
         {
-            // Enable or disable all MonoBehaviour components in the Weapon object
+            // Mengaktifkan atau menonaktifkan semua komponen MonoBehaviour di objek Weapon
             foreach (var component in weapon.GetComponentsInChildren<MonoBehaviour>())
             {
                 component.enabled = on;
             }
 
-            // Enable or disable the Animator component
+            // Mengaktifkan atau menonaktifkan komponen Animator
             Animator animator = weapon.GetComponentInChildren<Animator>();
             if (animator != null)
             {
                 animator.enabled = on;
             }
 
-            // Enable or disable the renderer components
+            // Mengaktifkan atau menonaktifkan komponen renderer
             foreach (var renderer in weapon.GetComponentsInChildren<Renderer>())
             {
                 renderer.enabled = on;
