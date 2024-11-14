@@ -48,53 +48,25 @@ public class WeaponPickup : MonoBehaviour
         }
     }
 
-    void TurnVisual(bool on)
+    void TurnVisual(bool on, Weapon targetWeapon = null)
     {
-        if (weapon != null)
+        Weapon weaponToModify = targetWeapon ?? weapon;
+        if (weaponToModify == null) return;
+
+        // Hanya mengatur komponen visual
+        foreach (var renderer in weaponToModify.GetComponentsInChildren<Renderer>())
         {
-            // Mengaktifkan atau menonaktifkan semua komponen MonoBehaviour di objek Weapon
-            foreach (var component in weapon.GetComponentsInChildren<MonoBehaviour>())
-            {
-                component.enabled = on;
-            }
-
-            // Mengaktifkan atau menonaktifkan komponen Animator
-            Animator animator = weapon.GetComponentInChildren<Animator>();
-            if (animator != null)
-            {
-                animator.enabled = on;
-            }
-
-            // Mengaktifkan atau menonaktifkan komponen renderer
-            foreach (var renderer in weapon.GetComponentsInChildren<Renderer>())
-            {
-                renderer.enabled = on;
-            }
+            renderer.enabled = on;
         }
-    }
 
-    void TurnVisual(bool on, Weapon weapon)
-    {
-        if (weapon != null)
+        // Animator jika ada
+        if (weaponToModify.GetComponentInChildren<Animator>() is Animator animator)
         {
-            // Mengaktifkan atau menonaktifkan semua komponen MonoBehaviour di objek Weapon
-            foreach (var component in weapon.GetComponentsInChildren<MonoBehaviour>())
-            {
-                component.enabled = on;
-            }
-
-            // Mengaktifkan atau menonaktifkan komponen Animator
-            Animator animator = weapon.GetComponentInChildren<Animator>();
-            if (animator != null)
-            {
-                animator.enabled = on;
-            }
-
-            // Mengaktifkan atau menonaktifkan komponen renderer
-            foreach (var renderer in weapon.GetComponentsInChildren<Renderer>())
-            {
-                renderer.enabled = on;
-            }
+            animator.enabled = on;
         }
+
+        // JANGAN nonaktifkan Weapon script
+        // Aktifkan/nonaktifkan komponen lain yang perlu
+        // contoh: ParticleSystem, LineRenderer, dll
     }
 }
