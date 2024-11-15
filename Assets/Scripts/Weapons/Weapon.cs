@@ -6,7 +6,7 @@ using UnityEngine.Pool;
 public class Weapon : MonoBehaviour
 {
     [Header("Weapon Stats")]
-    [SerializeField] private float shootIntervalInSeconds = 0.5f;
+    [SerializeField] private float shootIntervalInSeconds = 0.1f;
 
     [Header("Bullets")]
     public Bullet bullet;
