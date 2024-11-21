@@ -9,19 +9,26 @@ public class EnemyTargeting : Enemy
     private Transform playerTransform;
     private Camera mainCamera;
     private Vector2 screenBounds;
+    private Collider2D enemyCollider;
 
     void Start()
     {
-        // if (SceneManager.GetActiveScene().name != "Main")
-        // {
-        //     Destroy(gameObject);
-        //     return;
-        // }
-
+        // Get required components
         mainCamera = Camera.main;
+        enemyCollider = GetComponent<Collider2D>();
+
+        // Validate components
         if (mainCamera == null)
         {
             Debug.LogError("Main camera not found!");
+            enabled = false;
+            return;
+        }
+
+        if (enemyCollider == null)
+        {
+            Debug.LogError("Collider2D component missing from EnemyTargeting!");
+            enabled = false;
             return;
         }
 
@@ -34,10 +41,11 @@ public class EnemyTargeting : Enemy
         else
         {
             Debug.LogError("Player not found!");
+            enabled = false;
             return;
         }
 
-        InitializeSpawnPosition();
+        screenBounds = mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
     }
 
     void InitializeSpawnPosition()

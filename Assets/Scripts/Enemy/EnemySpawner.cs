@@ -4,56 +4,98 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject horizontalEnemyPrefab;
-    [SerializeField] private GameObject forwardEnemyPrefab;
-    [SerializeField] private GameObject targetingEnemyPrefab;
-    [SerializeField] private float spawnInterval = 2f;
-    [SerializeField] private int maxEnemies = 10;
-    
-    private float nextSpawnTime;
-    private int currentEnemyCount;
+    [Header("Enemy Prefabs")]
+    public Enemy spawnedEnemy;
 
-    void Start()
+    [SerializeField] private int minimumKillsToIncreaseSpawnCount = 3;
+    public int totalKill = 0;
+    private int totalKillWave = 0;
+
+    [SerializeField] private float spawnInterval = 3f;
+
+    [Header("Spawned Enemies Counter")]
+    public int spawnCount = 0;
+    public int defaultSpawnCount = 1;
+    public int spawnCountMultiplier = 1;
+    public int multiplierIncreaseCount = 1;
+
+    public CombatManager combatManager;
+
+    public bool isSpawning = false;
+
+    private List<Enemy> activeEnemies = new List<Enemy>();
+
+    private void Start()
     {
-        nextSpawnTime = Time.time + spawnInterval;
+        StartCoroutine(SpawnRoutine());
     }
 
-    void Update()
+    private IEnumerator SpawnRoutine()
     {
-        if (Time.time >= nextSpawnTime && currentEnemyCount < maxEnemies)
+        while (true)
         {
-            SpawnRandomEnemy();
-            nextSpawnTime = Time.time + spawnInterval;
+            SpawnWave();
+            yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-    void SpawnRandomEnemy()
+    private void SpawnWave()
     {
-        // Random value between 0 and 1
-        float random = Random.value;
-        GameObject enemyPrefab;
-
-        // Split probability equally between 3 enemy types
-        if (random < 0.33f)
-        {
-            enemyPrefab = horizontalEnemyPrefab;
-        }
-        else if (random < 0.66f)
-        {
-            enemyPrefab = forwardEnemyPrefab;
-        }
-        else
-        {
-            enemyPrefab = targetingEnemyPrefab;
-        }
+        int enemiesToSpawn = defaultSpawnCount * spawnCountMultiplier;
         
-        GameObject enemy = Instantiate(enemyPrefab);
-        currentEnemyCount++;
+        for (int i = 0; i < enemiesToSpawn; i++)
+        {
+            SpawnEnemy();
+        }
     }
 
-    // Call this when an enemy is destroyed
-    public void OnEnemyDestroyed()
+    private void SpawnEnemy()
     {
-        currentEnemyCount--;
+        if (spawnedEnemy != null)
+        {
+            Vector3 randomPosition = transform.position + Random.insideUnitSphere * 5f;
+            randomPosition.y = transform.position.y;
+            
+            Enemy enemy = Instantiate(spawnedEnemy, randomPosition, Quaternion.identity);
+            spawnCount++;
+            
+            if (enemy != null && combatManager != null)
+            {
+                enemy.OnEnemyDeath += HandleEnemyDeath;
+                activeEnemies.Add(enemy);
+            }
+        }
+    }
+
+    private void HandleEnemyDeath(Enemy enemy)
+    {
+        if (activeEnemies.Contains(enemy))
+        {
+            enemy.OnEnemyDeath -= HandleEnemyDeath;
+            activeEnemies.Remove(enemy);
+            
+            totalKill++;
+            totalKillWave++;
+            spawnCount--;
+
+            if (totalKillWave >= minimumKillsToIncreaseSpawnCount)
+            {
+                spawnCountMultiplier += multiplierIncreaseCount;
+                totalKillWave = 0;
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy != null)
+            {
+                enemy.OnEnemyDeath -= HandleEnemyDeath;
+            }
+        }
+        activeEnemies.Clear();
+        StopAllCoroutines();
     }
 }

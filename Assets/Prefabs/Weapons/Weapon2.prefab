@@ -59,7 +59,7 @@ Transform:
   m_GameObject: {fileID: 4615217607394353614}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 2, z: 1.1}
+  m_LocalPosition: {x: 0, y: 2, z: 1.1}
   m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -107,7 +107,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 6264491258527031638, guid: d58819ae51a945845b749cc34bd2c3ea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -156,6 +156,7 @@ MonoBehaviour:
   bullet: {fileID: 1139461453096101804, guid: 746ec95dc41b2634e93d73f624a1ad76, type: 3}
   bulletSpawnPoint: {fileID: 3773642684183433261}
   parentTransform: {fileID: 0}
+  isPickedUp: 0
 --- !u!1001 &523341104530133053
 PrefabInstance:
   m_ObjectHideFlags: 0

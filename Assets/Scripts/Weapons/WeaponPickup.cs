@@ -23,6 +23,7 @@ public class WeaponPickup : MonoBehaviour
             TurnVisual(false);
             weapon.transform.SetParent(transform, false); // Menetapkan weapon sebagai child dari objek ini
             weapon.transform.localPosition = Vector3.zero; // Mengatur posisi lokal senjata ke (0,0,0)
+            weapon.transform.localScale = new Vector3(1.2f, 1.2f, 0); // Mengatur skala lokal senjata ke (1,1,1)
             weapon.parentTransform = transform; // Menyimpan transformasi parent senjata
         }
     }
@@ -35,16 +36,22 @@ public class WeaponPickup : MonoBehaviour
             Weapon currentWeapon = other.GetComponentInChildren<Weapon>();
             if (currentWeapon != null)
             {
+                currentWeapon.isPickedUp = false; // Menonaktifkan senjata saat ini
                 currentWeapon.transform.SetParent(currentWeapon.parentTransform); // Mengembalikan senjata saat ini ke induknya
                 currentWeapon.transform.localPosition = Vector3.zero; // Mengatur posisi lokal senjata saat ini ke (0,0,0)
+                currentWeapon.transform.localScale = new Vector3(1.2f, 1.2f, 0); // Mengatur skala lokal senjata saat ini ke (1,1,1)
                 TurnVisual(false, currentWeapon); // Menonaktifkan visual senjata saat ini
             }
 
             // Menetapkan senjata baru ke pemain
             weapon.transform.SetParent(other.transform);
             // Menyesuaikan posisi lokal senjata relatif terhadap pemain
-            weapon.transform.localPosition = new Vector3(0, 0, 0); // Sesuaikan nilai ini sesuai kebutuhan
+            weapon.transform.localPosition = Vector3.zero; // Mengatur posisi lokal senjata ke (0,0,0)
+            weapon.transform.localScale = new Vector3(1.2f, 1.2f, 0); // Mengatur skala lokal senjata ke (1,1,1)
             TurnVisual(true); // Mengaktifkan visual senjata baru
+
+            // Atur isPickedUp menjadi true
+            weapon.isPickedUp = true;
         }
     }
 
@@ -64,9 +71,5 @@ public class WeaponPickup : MonoBehaviour
         {
             animator.enabled = on;
         }
-
-        // JANGAN nonaktifkan Weapon script
-        // Aktifkan/nonaktifkan komponen lain yang perlu
-        // contoh: ParticleSystem, LineRenderer, dll
     }
 }
