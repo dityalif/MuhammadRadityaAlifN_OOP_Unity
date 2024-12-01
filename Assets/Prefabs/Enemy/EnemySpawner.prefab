@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6756759075807851823}
   - component: {fileID: 1986206554394436118}
+  - component: {fileID: 8065885830296397840}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4384de38220c5e34b8b716e08126898f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnedEnemy: {fileID: 0}
+  spawnedEnemy: {fileID: 7599446619419122383, guid: 135da24214242644ba701897a37b4fb4, type: 3}
   minimumKillsToIncreaseSpawnCount: 6
   totalKill: 0
   spawnInterval: 3
@@ -52,5 +53,23 @@ MonoBehaviour:
   defaultSpawnCount: 2
   spawnCountMultiplier: 1
   multiplierIncreaseCount: 1
-  combatManager: {fileID: 0}
+  combatManager: {fileID: 8065885830296397840}
   isSpawning: 1
+--- !u!114 &8065885830296397840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866565228883382322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fae79b1fba847164385549ae601819e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySpawners: []
+  timer: 0
+  waveInterval: 5
+  waveNumber: 1
+  totalEnemies: 0
+  points: 0

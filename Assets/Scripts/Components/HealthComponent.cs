@@ -4,32 +4,27 @@ using UnityEngine;
 
 public class HealthComponent : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
+    public int maxHealth = 10;
+
     private int health;
-    private CombatManager combatManager;
 
-    public int Health
-    {
-        get { return health; }
-    }
-
-    void Start()
+    void Awake()
     {
         health = maxHealth;
-        combatManager = FindObjectOfType<CombatManager>();
     }
 
-    public void Subtract(int damage)
+    public void Subtract(int amount)
     {
-        health -= damage;
+        health -= amount;
 
         if (health <= 0)
         {
             Destroy(gameObject);
-            // if (combatManager != null)
-            // {
-            //     combatManager.OnEnemyKilled();
-            // }
         }
+    }
+
+    public int GetHealth()
+    {
+        return health;
     }
 }

@@ -1,71 +1,60 @@
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
 
 public class CombatManager : MonoBehaviour
 {
     public EnemySpawner[] enemySpawners;
     public float timer = 0;
     [SerializeField] private float waveInterval = 5f;
-    public int waveNumber = 1;
+    public int waveNumber = 0;
     public int totalEnemies = 0;
+    public int totalPoints = 0; // Add totalPoints property
 
+    // Start is called before the first frame update
     void Start()
     {
-        InitializeSpawners();
+
+        waveNumber = 0;
+        foreach (EnemySpawner enemySpawner in enemySpawners)
+        {
+            enemySpawner.combatManager = this;
+        }
     }
 
+    // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        UpdateTotalEnemies();
-        
-        if (timer >= waveInterval)
-        {
-            StartNewWave();
-        }
-    }
 
-    private void InitializeSpawners()
-    {
-        foreach (var spawner in enemySpawners)
+
+        if (totalEnemies <= 0)
         {
-            if (spawner != null)
+            timer += Time.deltaTime;
+            if (timer >= waveInterval)
             {
-                spawner.combatManager = this;
+                timer = 0;
+                StartNextWave();
             }
         }
     }
 
-    private void UpdateTotalEnemies()
+    private void StartNextWave()
     {
-        totalEnemies = 0;
-        foreach (var spawner in enemySpawners)
-        {
-            if (spawner != null)
-            {
-                totalEnemies += spawner.spawnCount;
-            }
-        }
-    }
 
-    private void StartNewWave()
-    {
-        waveNumber++;
         timer = 0;
-        
-        // Optionally increase difficulty per wave
-        foreach (var spawner in enemySpawners)
+        waveNumber++;
+        // Debug.Log("Starting wave " + waveNumber);
+        foreach (EnemySpawner enemySpawner in enemySpawners)
         {
-            if (spawner != null)
-            {
-                spawner.spawnCountMultiplier++;
-            }
+            Debug.Log("Starting enemy spawner");
+            enemySpawner.StartSpawning();
         }
     }
 
-    public void EnemyDefeated()
+    public void onDeath(Enemy enemy)
     {
-        UpdateTotalEnemies();
+        totalEnemies--;
+        totalPoints += enemy.GetLevel(); // Update totalPoints based on enemy level
     }
 }

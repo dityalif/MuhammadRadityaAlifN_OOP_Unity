@@ -13,9 +13,12 @@ GameObject:
   - component: {fileID: -8189575472618764749}
   - component: {fileID: 1233161396439154475}
   - component: {fileID: 4923459124762234479}
+  - component: {fileID: -6341560134300337416}
+  - component: {fileID: -6212083980865084805}
+  - component: {fileID: 799905083129714091}
   m_Layer: 0
   m_Name: EnemyTargeting
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,7 +94,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.41666666}
@@ -117,7 +120,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 948f18a12735c3443b391bb79a3a08a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -162,4 +165,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
-  moveSpeed: 5
+  enemyKilledEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  speed: 2
+--- !u!114 &-6341560134300337416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6192244961154077952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b81984f91afa941a820ed513dea209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: -6212083980865084805}
+--- !u!114 &-6212083980865084805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6192244961154077952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef07641e7c2481b449a61b2002ce2fbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+--- !u!114 &799905083129714091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6192244961154077952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c019c9124c3bdd449276502ad4db2c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blinkingCount: 7
+  blinkInterval: 0.1
+  blinkMaterial: {fileID: 2100000, guid: 948f18a12735c3443b391bb79a3a08a0, type: 2}
+  isInvincible: 0

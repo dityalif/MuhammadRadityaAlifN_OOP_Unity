@@ -1,50 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Analytics;
 
 public class EnemyForward : Enemy
 {
-    [SerializeField] private float moveSpeed = 5f;
-    private Camera mainCamera;
-    private Vector2 screenBounds;
-    private int direction = -1; // -1 for down only
+    public float speed = 5f;
+    private Vector3 direction;
+    private Vector3 spawnPoint;
+    public int health = 3; // Add health property
 
     void Start()
     {
-        // if (SceneManager.GetActiveScene().name != "Main")
-        // {
-        //     Destroy(gameObject);
-        //     return;
-        // }
+        Vector3 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
 
-        mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-            Debug.LogError("Main camera not found!");
-            return;
-        }
+        spawnPoint = new Vector3(Random.Range(-screenBounds.x, screenBounds.x), screenBounds.y + 1, 0);
+        direction = Vector3.down;
 
-        InitializeSpawnPosition();
-    }
-
-    void InitializeSpawnPosition()
-    {
-        screenBounds = mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-        float spawnX = Random.Range(-screenBounds.x, screenBounds.x);
-        float spawnY = screenBounds.y; // Start at top
-        transform.position = new Vector2(spawnX, spawnY);
+        transform.position = spawnPoint;
     }
 
     void Update()
     {
-        // Move downward only
-        transform.Translate(Vector2.up * direction * moveSpeed * Time.deltaTime);
-        
-        // Destroy when below screen
+        // Move the enemy
+        transform.Translate(direction * speed * Time.deltaTime);
+
+        // Check if the enemy is off the screen and reset to spawn point
+        Vector3 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+
         if (transform.position.y < -screenBounds.y)
         {
-            Destroy(gameObject);
+            transform.position = spawnPoint;
+            transform.position = new Vector3(Random.Range(-screenBounds.x, screenBounds.x), screenBounds.y + 1, 0);
         }
     }
+
+
+
+
 }

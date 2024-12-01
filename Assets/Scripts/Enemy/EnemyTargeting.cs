@@ -1,94 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class EnemyTargeting : Enemy
 {
-    [SerializeField] private float moveSpeed = 5f;
-    private Transform playerTransform;
-    private Camera mainCamera;
-    private Vector2 screenBounds;
-    private Collider2D enemyCollider;
+    public float speed = 5f;
+    private Transform player;
+    private Vector3 screenBounds;
+
+    void RandomizeSpawnPoint()
+    {
+        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        transform.position = new Vector3(Random.Range(-screenBounds.x, screenBounds.x), Random.Range(-screenBounds.y, screenBounds.y), 0);
+    }
 
     void Start()
     {
-        // Get required components
-        mainCamera = Camera.main;
-        enemyCollider = GetComponent<Collider2D>();
-
-        // Validate components
-        if (mainCamera == null)
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
         {
-            Debug.LogError("Main camera not found!");
-            enabled = false;
-            return;
-        }
-
-        if (enemyCollider == null)
-        {
-            Debug.LogError("Collider2D component missing from EnemyTargeting!");
-            enabled = false;
-            return;
-        }
-
-        // Find player
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            playerTransform = player.transform;
+            player = playerObject.transform;
         }
         else
         {
-            Debug.LogError("Player not found!");
-            enabled = false;
-            return;
+            Debug.LogError("Player object not found. Make sure there is an object with the tag 'Player' in the scene.");
         }
-
-        screenBounds = mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-    }
-
-    void InitializeSpawnPosition()
-    {
-        screenBounds = mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-        
-        // Random spawn position around screen edges
-        float randomSide = Random.Range(0, 4); // 0:top, 1:right, 2:bottom, 3:left
-        Vector2 spawnPos = Vector2.zero;
-        
-        switch (randomSide)
-        {
-            case 0: // top
-                spawnPos = new Vector2(Random.Range(-screenBounds.x, screenBounds.x), screenBounds.y);
-                break;
-            case 1: // right
-                spawnPos = new Vector2(screenBounds.x, Random.Range(-screenBounds.y, screenBounds.y));
-                break;
-            case 2: // bottom
-                spawnPos = new Vector2(Random.Range(-screenBounds.x, screenBounds.x), -screenBounds.y);
-                break;
-            case 3: // left
-                spawnPos = new Vector2(-screenBounds.x, Random.Range(-screenBounds.y, screenBounds.y));
-                break;
-        }
-        
-        transform.position = spawnPos;
+        RandomizeSpawnPoint();
     }
 
     void Update()
     {
-        if (playerTransform == null) return;
+        if (player != null)
+        {
+            Vector2 direction = (player.position - transform.position).normalized;
+            transform.Translate(direction * speed * Time.deltaTime);
+        }
 
-        // Calculate direction to player
-        Vector2 direction = (playerTransform.position - transform.position).normalized;
-        
-        // Move towards player
-        transform.Translate(direction * moveSpeed * Time.deltaTime);
+        // Keep the enemy within screen bounds
+        // Vector3 pos = transform.position;
+        // pos.x = Mathf.Clamp(pos.x, -screenBounds.x, screenBounds.x);
+        // pos.y = Mathf.Clamp(pos.y, -screenBounds.y, screenBounds.y);
+        // transform.position = pos;
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.CompareTag("Bullet"))
+        {
+
+            Destroy(collision.gameObject); // Destroy the bullet
+        }
+        else if (collision.CompareTag("Player"))
         {
             Destroy(gameObject);
         }

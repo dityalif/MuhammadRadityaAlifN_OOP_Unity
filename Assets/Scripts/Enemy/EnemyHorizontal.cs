@@ -1,66 +1,67 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Analytics;
+using System.Collections;
 
 public class EnemyHorizontal : Enemy
 {
-    [SerializeField] private float moveSpeed = 5f;
-    private int direction; // 1 for right, -1 for left
-    private Camera mainCamera;
-    private Vector2 screenBounds;
+    public float speed = 5f;
+    private Vector3 direction;
+    private Vector3 spawnPoint;
+
+    private SpriteRenderer spriteRenderer; // Add SpriteRenderer reference
+    private InvincibilityComponent invincibilityComponent; // Add Invincibility reference
+    private AttackComponent attackComponent; // Add AttackComponent reference
+
+    public HealthComponent healthComponent;
 
     void Start()
     {
-        Debug.Log($"Current scene: {SceneManager.GetActiveScene().name}");
-        
-        // Check current scene name
-        // if (SceneManager.GetActiveScene().name != "Main")
-        // {
-        //     Debug.Log("Not in Main scene, destroying enemy");
-        //     Destroy(gameObject);
-        //     return;
-        // }
+        healthComponent = GetComponent<HealthComponent>();
 
-        mainCamera = Camera.main;
-        if (mainCamera == null)
+        Vector3 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+        if (Random.value > 0.5f)
         {
-            Debug.LogError("Main camera not found!");
-            return;
+            spawnPoint = new Vector3(-screenBounds.x + 1, Random.Range(-screenBounds.y + 1f, screenBounds.y), 0);
+            direction = Vector3.left;
         }
-
-        InitializeSpawnPosition();
-        Debug.Log($"Enemy spawned at position: {transform.position} with direction: {direction}");
+        else
+        {
+            spawnPoint = new Vector3(screenBounds.x - 1, Random.Range(-screenBounds.y + 1f, screenBounds.y), 0);
+            direction = Vector3.right;
+        }
+        transform.position = spawnPoint;
     }
 
-    void InitializeSpawnPosition()
-    {
-        // Convert viewport points to world coordinates
-        screenBounds = mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-        
-        // Randomly choose left (-1) or right (1) side
-        direction = Random.Range(0, 2) * 2 - 1; // Results in either -1 or 1
-        
-        // Set initial position
-        float spawnX = direction == -1 ? screenBounds.x : -screenBounds.x;
-        float spawnY = Random.Range(-screenBounds.y, screenBounds.y);
-        
-        transform.position = new Vector2(spawnX, spawnY);
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        // Move horizontally based on direction
-        transform.Translate(Vector2.right * direction * moveSpeed * Time.deltaTime);
-        
-        // Get current position in world coordinates
-        Vector2 worldPosition = transform.position;
-        
-        // Check if enemy hits screen bounds and reverse direction
-        if (worldPosition.x >= screenBounds.x || worldPosition.x <= -screenBounds.x)
+        // Move the enemy
+        transform.Translate(direction * speed * Time.deltaTime);
+
+        // Check if the enemy is off the screen and reverse direction
+        Vector3 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+
+
+        if (transform.position.x > screenBounds.x)
         {
-            direction *= -1; // Reverse direction
+            direction = -direction;
         }
+        else if (transform.position.x < -screenBounds.x)
+        {
+            direction = -direction;
+        }
+
+
+
     }
+
+    // public void TakeDamage(int damage)
+    // {
+    //     health -= damage;
+    //     Debug.Log("Health: " + health);
+    //     invincibilityComponent.StartInvincibility(); // Use Invincibility component's Blink method
+    //     if (health <= 0)
+    //     {
+    //         Destroy(gameObject);
+    //     }
+    // }
 }

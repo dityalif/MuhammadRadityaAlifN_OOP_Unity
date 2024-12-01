@@ -1,16 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
-using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
-    public int level;
-    public event Action<Enemy> OnEnemyDeath;
+  [SerializeField] protected int level;
 
-    public void Die()
-    {
-        OnEnemyDeath?.Invoke(this);
-        Destroy(gameObject);
-    }
+  public UnityEvent enemyKilledEvent;
+
+  public int Level
+  {
+    get { return level; }
+    set { level = value; }
+  }
+
+  private void Start()
+  {
+    enemyKilledEvent ??= new UnityEvent();
+  }
+
+  public void SetLevel(int level)
+  {
+    this.level = level;
+  }
+
+  public int GetLevel()
+  {
+    return level;
+  }
+
+  private void OnDestroy()
+  {
+    enemyKilledEvent.Invoke();
+  }
 }

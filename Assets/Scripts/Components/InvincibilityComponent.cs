@@ -1,53 +1,47 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
-[RequireComponent(typeof(HitboxComponent))]
+[RequireComponent(typeof(SpriteRenderer)), RequireComponent(typeof(HitboxComponent))]
 public class InvincibilityComponent : MonoBehaviour
 {
-    [SerializeField] private Material playerMaterial;
-    [SerializeField] private Material enemyMaterial;
+    [SerializeField] private int blinkingCount = 7;
     [SerializeField] private float blinkInterval = 0.1f;
-    [SerializeField] private int blinkCount = 5;
+    [SerializeField] private Material blinkMaterial;
 
     private SpriteRenderer spriteRenderer;
     private Material originalMaterial;
-    private bool isInvincible = false;
 
-    void Start()
+    public bool isInvincible = false;
+
+    // Start is called before the first frame update
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalMaterial = spriteRenderer.material;
-        
-        // Set appropriate material based on tag
-        if (gameObject.CompareTag("Player"))
-            spriteRenderer.material = playerMaterial;
-        else
-            spriteRenderer.material = enemyMaterial;
     }
 
-    public bool IsInvincible => isInvincible;
-
-    private IEnumerator BlinkRoutine()
-    {
-        isInvincible = true;
-
-        for (int i = 0; i < blinkCount; i++)
-        {
-            spriteRenderer.enabled = false;
-            yield return new WaitForSeconds(blinkInterval);
-            spriteRenderer.enabled = true;
-            yield return new WaitForSeconds(blinkInterval);
-        }
-
-        isInvincible = false;
-    }
-
-    public void StartInvincibility()
+    public void TriggerInvincibility()
     {
         if (!isInvincible)
         {
-            StartCoroutine(BlinkRoutine());
+            StartCoroutine(InvincibilityCoroutine());
         }
+    }
+
+    private IEnumerator InvincibilityCoroutine()
+    {
+        isInvincible = true;
+
+        for (int i = 0; i < blinkingCount; i++)
+        {
+            spriteRenderer.material = blinkMaterial;
+            yield return new WaitForSeconds(blinkInterval / 2);
+            spriteRenderer.material = originalMaterial;
+            yield return new WaitForSeconds(blinkInterval / 2);
+        }
+
+        spriteRenderer.material = originalMaterial;
+
+        isInvincible = false;
     }
 }

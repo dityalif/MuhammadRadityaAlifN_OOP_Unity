@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 3841596328236351498}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.34027773, z: 0}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
   m_LocalScale: {x: 0.83333325, y: 0.83333325, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -107,7 +107,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 6264491258527031638, guid: d58819ae51a945845b749cc34bd2c3ea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -152,7 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea56f9215d9b0974aa6d91eefcafd185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootIntervalInSeconds: 3
   bullet: {fileID: 1139461453096101804, guid: 746ec95dc41b2634e93d73f624a1ad76, type: 3}
   bulletSpawnPoint: {fileID: 3773642684183433261}
   parentTransform: {fileID: 0}
@@ -167,11 +166,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2868313471677568780, guid: 746ec95dc41b2634e93d73f624a1ad76, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.17790717
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2868313471677568780, guid: 746ec95dc41b2634e93d73f624a1ad76, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.024360985
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 2868313471677568780, guid: 746ec95dc41b2634e93d73f624a1ad76, type: 3}
       propertyPath: m_LocalPosition.z
